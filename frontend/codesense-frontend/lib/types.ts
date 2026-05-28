@@ -32,3 +32,10 @@ export interface ChatMessage {
   content: string;
   createdAt: string;
 }
+
+export interface SubmissionRequest {
+  submissionType: "pr_url" | "paste";
+  prUrl?: string;
+  code?: string;
+  language?: string;
+}

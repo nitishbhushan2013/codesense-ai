@@ -120,15 +120,15 @@ Done when: Login returns JWT cookie. /api/auth/me returns profile. Logout clears
 
 ### STORY-106 — GitHub OAuth Login
 
-**Status: 🔄 IN PROGRESS**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Register GitHub OAuth App in GitHub Developer Settings
-- [ ] Add GitHub OAuth2 config to application.yml
-- [ ] Configure Spring Security OAuth2 client
-- [ ] Create OAuth2SuccessHandler
-- [ ] Test full GitHub OAuth flow locally
+- [x] Register GitHub OAuth App in GitHub Developer Settings
+- [x] Add GitHub OAuth2 config to application.yml
+- [x] Configure Spring Security OAuth2 client
+- [x] Create OAuth2SuccessHandler
+- [x] Test full GitHub OAuth flow locally
 
 Done when: GitHub login completes OAuth flow, creates/finds user in DB, issues JWT cookie.
 
@@ -136,16 +136,16 @@ Done when: GitHub login completes OAuth flow, creates/finds user in DB, issues J
 
 ### STORY-107 — Login and Registration UI
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Build /auth/login page
-- [ ] Build /auth/register page
-- [ ] Connect forms to backend API
-- [ ] Store auth state in React Context
-- [ ] Show user avatar in Navbar when logged in
-- [ ] Redirect to dashboard after login
+- [x] Build /auth/login page
+- [x] Build /auth/register page
+- [x] Connect forms to backend API
+- [x] Store auth state in React Context
+- [x] Show user avatar in Navbar when logged in
+- [x] Redirect to dashboard after login
 
 Done when: User can register, login, see name in navbar, and logout from browser.
 
@@ -155,15 +155,15 @@ Done when: User can register, login, see name in navbar, and logout from browser
 
 ### STORY-201 — Landing Page + Submission Form
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Build landing page with hero section
-- [ ] Build SubmitForm with two tabs: GitHub PR URL and Paste Code
-- [ ] PR URL tab with validation
-- [ ] Paste Code tab with language selector
-- [ ] Loading state during submission
+- [x] Build landing page with hero section
+- [x] Build SubmitForm with two tabs: GitHub PR URL and Paste Code
+- [x] PR URL tab with validation
+- [x] Paste Code tab with language selector
+- [x] Loading state during submission
 
 Done when: Landing page renders cleanly. Both tabs work. Submitting triggers loading state.
 
@@ -366,8 +366,8 @@ Done when: App is polished, README complete, proud to share publicly.
 | Sprint     | Stories          | Status         |
 | ---------- | ---------------- | -------------- |
 | Pre-Sprint | STORY-000        | ✅ Complete    |
-| Sprint 1   | STORY-101 to 107 | 🔄 In Progress |
-| Sprint 2   | STORY-201 to 205 | ⏳ Pending     |
+| Sprint 1   | STORY-101 to 107 | ✅ Complete    |
+| Sprint 2   | STORY-201 to 205 | 🔄 In Progress |
 | Sprint 3   | STORY-301 to 303 | ⏳ Pending     |
 | Sprint 4   | STORY-401 to 404 | ⏳ Pending     |
-| **Total**  | **18 stories**   | **5 complete** |
+| **Total**  | **18 stories**   | **9 complete** |
