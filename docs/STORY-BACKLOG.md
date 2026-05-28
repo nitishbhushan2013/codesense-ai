@@ -1,0 +1,373 @@
+# CodeSense AI — Story Backlog
+
+## Version 1.0
+
+## Backlog Philosophy
+
+Each story is small enough to build in one focused session.
+Stories are ordered so each one builds on the previous.
+No story is vague — every task is explicit and testable.
+
+---
+
+## Pre-Sprint — Dev Environment Setup
+
+### STORY-000 — Dev Environment Setup
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Install VS Code
+- [x] Install Node.js 20 LTS
+- [x] Install Java 21 JDK
+- [x] Install Maven
+- [x] Install Git
+- [x] Install Azure CLI
+- [x] Create GitHub account
+- [x] Create Azure account
+- [x] Install VS Code extensions
+
+Done when: `node -v`, `java -version`, `mvn -v`, `git -v`, `az -v` all respond without errors.
+
+---
+
+## Sprint 1 — Foundation
+
+### STORY-101 — Initialise Backend Project
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Create Spring Boot 3 project via start.spring.io
+- [x] Set up application.yml with local dev config
+- [x] Create base package structure
+- [x] Add JWT, Azure SDK dependencies to pom.xml
+- [x] Verify app starts with mvn spring-boot:run
+
+Done when: Spring Boot starts on port 8080 with no errors.
+
+---
+
+### STORY-102 — Initialise Frontend Project
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Create Next.js 14 project with TypeScript and Tailwind
+- [x] Set up folder structure
+- [x] Create base layout with empty Navbar
+- [x] Set up lib/api.ts with Axios base configuration
+- [x] Verify app runs with npm run dev
+
+Done when: Next.js runs on localhost:3000 with no errors.
+
+---
+
+### STORY-103 — Set up PostgreSQL locally
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Install PostgreSQL locally
+- [x] Create database codesense_db
+- [x] Run all four CREATE TABLE scripts
+- [x] Connect Spring Boot to local DB
+- [x] Verify Spring Boot connects without errors
+
+Done when: Tables exist in DB and Spring Boot connects cleanly.
+
+---
+
+### STORY-104 — Email/Password Registration API
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Create User entity and UserRepository
+- [x] Create AuthController with POST /api/auth/register
+- [x] Create AuthService with BCrypt password hashing
+- [x] Validate: name, email (unique), password (min 8 chars, 1 number)
+- [x] Return meaningful error messages for validation failures
+- [x] Create SecurityConfig to permit /api/auth/\*\* endpoints
+
+Done when: POST /api/auth/register creates user. Duplicate email returns 400. Weak password returns 400.
+
+---
+
+### STORY-105 — Email/Password Login + JWT
+
+**Status: ✅ COMPLETE**
+
+Tasks:
+
+- [x] Create LoginRequest DTO
+- [x] Create JwtService for token generation and validation
+- [x] Create JwtFilter to validate JWT on every request
+- [x] Create POST /api/auth/login endpoint
+- [x] Return JWT in HttpOnly cookie with 24hr expiry
+- [x] Create GET /api/auth/me endpoint
+- [x] Create POST /api/auth/logout endpoint
+- [x] Update SecurityConfig to add JwtFilter
+
+Done when: Login returns JWT cookie. /api/auth/me returns profile. Logout clears cookie.
+
+---
+
+### STORY-106 — GitHub OAuth Login
+
+**Status: 🔄 IN PROGRESS**
+
+Tasks:
+
+- [ ] Register GitHub OAuth App in GitHub Developer Settings
+- [ ] Add GitHub OAuth2 config to application.yml
+- [ ] Configure Spring Security OAuth2 client
+- [ ] Create OAuth2SuccessHandler
+- [ ] Test full GitHub OAuth flow locally
+
+Done when: GitHub login completes OAuth flow, creates/finds user in DB, issues JWT cookie.
+
+---
+
+### STORY-107 — Login and Registration UI
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Build /auth/login page
+- [ ] Build /auth/register page
+- [ ] Connect forms to backend API
+- [ ] Store auth state in React Context
+- [ ] Show user avatar in Navbar when logged in
+- [ ] Redirect to dashboard after login
+
+Done when: User can register, login, see name in navbar, and logout from browser.
+
+---
+
+## Sprint 2 — Core Value
+
+### STORY-201 — Landing Page + Submission Form
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Build landing page with hero section
+- [ ] Build SubmitForm with two tabs: GitHub PR URL and Paste Code
+- [ ] PR URL tab with validation
+- [ ] Paste Code tab with language selector
+- [ ] Loading state during submission
+
+Done when: Landing page renders cleanly. Both tabs work. Submitting triggers loading state.
+
+---
+
+### STORY-202 — GitHub PR Diff Fetching
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Create GitHubService to fetch PR diff via GitHub REST API
+- [ ] Parse PR URL to extract owner, repo, PR number
+- [ ] Store raw diff in Azure Blob Storage
+- [ ] Handle errors: PR not found, private repo, rate limit
+- [ ] Write unit test with mocked GitHub API response
+
+Done when: Given valid public GitHub PR URL, service returns code diff and blob key.
+
+---
+
+### STORY-203 — Claude AI Review Service
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Add Claude API key to local config
+- [ ] Create ClaudeService with code analysis method
+- [ ] Build system prompt and user prompt
+- [ ] Call Claude API and parse JSON response
+- [ ] Map response to ReviewResponse DTO
+- [ ] Handle retry logic — max 2 retries
+- [ ] Write unit test with mocked Claude response
+
+Done when: Given code string, ClaudeService returns parsed ReviewResponse with findings.
+
+---
+
+### STORY-204 — Review Submission Endpoint
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Create POST /api/reviews endpoint
+- [ ] Orchestrate: fetch diff → call Claude → parse response
+- [ ] Persist Review + Finding records for logged-in users
+- [ ] Return result only for anonymous users
+- [ ] Write integration test
+
+Done when: POST /api/reviews returns full structured review. Logged-in users have it saved.
+
+---
+
+### STORY-205 — Review Results Page
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Build /review/[id] page
+- [ ] Build ReviewSummary component
+- [ ] Build ReviewCard component
+- [ ] Add category tabs: Bugs, Security, Performance, Quality
+- [ ] Add severity filter
+- [ ] Add copy-to-clipboard on fix snippets
+- [ ] Show sign-up nudge for anonymous users
+
+Done when: After submitting code, user sees full review with categorised findings and copyable fixes.
+
+---
+
+## Sprint 3 — Retention
+
+### STORY-301 — Review History Dashboard
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Create GET /api/reviews endpoint
+- [ ] Create DELETE /api/reviews/{id} endpoint
+- [ ] Build /dashboard page (protected)
+- [ ] Build DashboardList component
+- [ ] Delete button with confirmation
+- [ ] Empty state with CTA
+- [ ] Date range filter
+
+Done when: Logged-in user sees all past reviews, can reopen and delete them.
+
+---
+
+### STORY-302 — Follow-up Chat Backend
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Create POST /api/reviews/{id}/chat with SSE streaming
+- [ ] Build conversation context with original code
+- [ ] Call Claude API and stream tokens back
+- [ ] Persist chat messages to DB
+- [ ] Create GET /api/reviews/{id}/chat for history
+
+Done when: Chat message returns streaming SSE response. History persists correctly.
+
+---
+
+### STORY-303 — Follow-up Chat UI
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Build ChatPanel component on review results page
+- [ ] Show chat only to logged-in users
+- [ ] Connect to SSE endpoint — stream response token by token
+- [ ] Auto-scroll to latest message
+- [ ] Load existing chat history on revisit
+
+Done when: Logged-in user can chat with AI about review in real time.
+
+---
+
+## Sprint 4 — Ship
+
+### STORY-401 — Azure Resource Provisioning
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Create Resource Group codesense-rg
+- [ ] Provision Azure Database for PostgreSQL
+- [ ] Run database schema SQL scripts
+- [ ] Provision Azure Blob Storage
+- [ ] Provision Azure Key Vault with all secrets
+- [ ] Provision Azure App Service
+- [ ] Provision Azure Static Web Apps
+- [ ] Provision Azure Application Insights
+
+Done when: All Azure resources exist and are configured.
+
+---
+
+### STORY-402 — Backend Azure Deployment
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Configure application-prod.yml
+- [ ] Connect App Service to Key Vault via Managed Identity
+- [ ] Create azure-pipelines-backend.yml
+- [ ] Push to main and verify pipeline deploys
+- [ ] Test all APIs against live Azure URL
+
+Done when: Backend is live on Azure App Service.
+
+---
+
+### STORY-403 — Frontend Azure Deployment
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Set NEXT_PUBLIC_API_URL to live backend URL
+- [ ] Create azure-pipelines-frontend.yml
+- [ ] Configure Azure Static Web Apps deployment token
+- [ ] Push to main and verify pipeline deploys
+- [ ] Test full end-to-end flow on Azure
+
+Done when: Frontend is live and publicly accessible on Azure.
+
+---
+
+### STORY-404 — Polish + LinkedIn Ready
+
+**Status: ⏳ PENDING**
+
+Tasks:
+
+- [ ] Write complete README.md
+- [ ] Add favicon and app title
+- [ ] Review all pages for mobile responsiveness
+- [ ] Fix UI inconsistencies
+- [ ] Add error boundary pages (404, 500)
+- [ ] Full end-to-end test as anonymous user
+- [ ] Full end-to-end test as logged-in user
+- [ ] Take screenshots for LinkedIn post
+
+Done when: App is polished, README complete, proud to share publicly.
+
+---
+
+## Backlog Summary
+
+| Sprint     | Stories          | Status         |
+| ---------- | ---------------- | -------------- |
+| Pre-Sprint | STORY-000        | ✅ Complete    |
+| Sprint 1   | STORY-101 to 107 | 🔄 In Progress |
+| Sprint 2   | STORY-201 to 205 | ⏳ Pending     |
+| Sprint 3   | STORY-301 to 303 | ⏳ Pending     |
+| Sprint 4   | STORY-401 to 404 | ⏳ Pending     |
+| **Total**  | **18 stories**   | **5 complete** |
