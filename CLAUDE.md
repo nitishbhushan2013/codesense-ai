@@ -32,7 +32,16 @@ Code formatting is enforced by `fmt-maven-plugin` (Google Java Format), bound to
 - Production build: `npm run build`
 - Lint: `npm run lint`
 
-There is no frontend test runner configured.
+#### End-to-end tests (Playwright)
+
+Specs live in `frontend/codesense-frontend/e2e/` (`*.spec.ts`), config in `playwright.config.ts`. See [e2e/README.md](frontend/codesense-frontend/e2e/README.md).
+
+- Run all: `npm run test:e2e` — headed: `npm run test:e2e:headed` — UI mode: `npm run test:e2e:ui` — last report: `npm run test:e2e:report`
+- One file/scenario: `npx playwright test e2e/auth.spec.ts` / `npx playwright test -g "invalid login"`
+
+Tests run against **already-running** servers (they do not start them): frontend on 3000, backend on 8080, PostgreSQL on 5432. `CLAUDE_API_KEY` may stay unset — the review-submit test asserts the error path, not a live AI result.
+
+**Standing instruction: whenever a story is completed, add Playwright E2E scenarios for it to `e2e/`** (one `describe` block per story, scenarios labelled by number), then run `npm run test:e2e` and confirm green before considering the story done. Group by story (`landing.spec.ts`, `auth.spec.ts`, …); reuse the existing selector conventions (`input[name="…"]`, role/text locators, `nav`-scoped navbar checks). Do not test pending/unbuilt features.
 
 ## Architecture
 
