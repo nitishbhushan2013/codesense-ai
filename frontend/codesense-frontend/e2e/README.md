@@ -57,3 +57,25 @@ Point at a different frontend URL with `E2E_BASE_URL` (e.g. `E2E_BASE_URL=http:/
 - Tests run serially (`workers: 1`) because the auth flow shares session state.
 - First install only: `npm install -D @playwright/test && npx playwright install chromium`
   (already done in this repo).
+
+## Enforcement gate
+
+[`scripts/e2e-gate.mjs`](../../../scripts/e2e-gate.mjs) (repo root) is a Claude Code
+**PreToolUse** hook that blocks any `git commit` until this suite is green — so a story
+can't be marked done with failing/missing E2E coverage. If the app servers are down it
+starts them, waits for readiness, then runs `npm run test:e2e`. Postgres must already be
+up (the gate won't start the database).
+
+It's a Node script with no dependencies, so it's cross-shell. Wire it up per machine by
+adding to your local `.claude/settings.json` (this file is gitignored, so it isn't shared):
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash|PowerShell",
+        "hooks": [ { "type": "command", "command": "node scripts/e2e-gate.mjs", "timeout": 240 } ] }
+    ]
+  }
+}
+```
