@@ -212,17 +212,17 @@ Done when: Given valid public GitHub PR URL, service returns code diff and blob 
 
 ### STORY-203 — Claude AI Review Service
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Add Claude API key to local config
-- [ ] Create ClaudeService with code analysis method
-- [ ] Build system prompt and user prompt
-- [ ] Call Claude API and parse JSON response
-- [ ] Map response to ReviewResponse DTO
-- [ ] Handle retry logic — max 2 retries
-- [ ] Write unit test with mocked Claude response
+- [x] Add Claude API key to local config *(env var ${CLAUDE_API_KEY:}, blank default)*
+- [x] Create ClaudeService with code analysis method
+- [x] Build system prompt and user prompt
+- [x] Call Claude API and parse JSON response
+- [x] Map response to ReviewResponse DTO
+- [x] Handle retry logic — max 2 retries
+- [x] Write unit test with mocked Claude response
 
 Done when: Given code string, ClaudeService returns parsed ReviewResponse with findings.
 

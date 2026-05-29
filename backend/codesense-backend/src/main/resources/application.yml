@@ -36,9 +36,11 @@ app:
 
 claude:
   api:
-    key: your-claude-api-key
+    key: ${CLAUDE_API_KEY:}
     url: https://api.anthropic.com/v1/messages
     model: claude-sonnet-4-20250514
+    max-tokens: 4096
+    retry-backoff-ms: 500
 
 github:
   api:
