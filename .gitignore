@@ -6,3 +6,8 @@ docs/STORY-[0-9]*.md
 
 # E2E gate hook server logs
 .e2e-gate/
+
+# Build / test / tooling artifacts (never committed)
+*.stackdump
+test-reports/
+.playwright-mcp/
