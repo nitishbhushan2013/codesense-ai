@@ -14,6 +14,8 @@ Run all commands from the relevant app subdirectory, not the repo root.
 
 ## Commands
 
+**During active development, always keep both servers running**: the backend (`./mvnw spring-boot:run`, port 8080) and the frontend (`npm run dev`, port 3000), plus PostgreSQL on 5432. Many tasks (manual checks, Playwright E2E, the commit gate) assume both are live. Since STORY-108 the backend will not boot without its secret env vars set (`DB_PASSWORD`, `JWT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — see `backend/codesense-backend/.env.example`).
+
 ### Backend (`backend/codesense-backend/`)
 
 Use the Maven wrapper. On Windows use `mvnw.cmd`; the examples below use the POSIX form.
