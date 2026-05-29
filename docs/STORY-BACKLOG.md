@@ -230,15 +230,15 @@ Done when: Given code string, ClaudeService returns parsed ReviewResponse with f
 
 ### STORY-204 — Review Submission Endpoint
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create POST /api/reviews endpoint
-- [ ] Orchestrate: fetch diff → call Claude → parse response
-- [ ] Persist Review + Finding records for logged-in users
-- [ ] Return result only for anonymous users
-- [ ] Write integration test
+- [x] Create POST /api/reviews endpoint
+- [x] Orchestrate: fetch diff → call Claude → parse response
+- [x] Persist Review + Finding records for logged-in users
+- [x] Return result only for anonymous users
+- [x] Write integration test
 
 Done when: POST /api/reviews returns full structured review. Logged-in users have it saved.
 

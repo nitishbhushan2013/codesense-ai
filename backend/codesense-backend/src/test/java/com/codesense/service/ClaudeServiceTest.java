@@ -3,7 +3,7 @@ package com.codesense.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.codesense.dto.ReviewResponse;
+import com.codesense.dto.ClaudeReviewResult;
 import com.codesense.exception.ClaudeApiException;
 import com.codesense.exception.ClaudeApiException.Reason;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,7 +81,7 @@ class ClaudeServiceTest {
   void parsesValidResponse() {
     ClaudeService svc = buildService(req -> Mono.just(jsonOk(envelope(VALID_INNER_JSON))));
 
-    ReviewResponse review = svc.analyzeCode("System.out.println(\"hi\");", "Java");
+    ClaudeReviewResult review = svc.analyzeCode("System.out.println(\"hi\");", "Java");
 
     assertThat(review.score()).isEqualTo(75);
     assertThat(review.summary()).contains("well-structured");
@@ -95,7 +95,7 @@ class ClaudeServiceTest {
     String fenced = "```json\n" + VALID_INNER_JSON.trim() + "\n```";
     ClaudeService svc = buildService(req -> Mono.just(jsonOk(envelope(fenced))));
 
-    ReviewResponse review = svc.analyzeCode("code", "Java");
+    ClaudeReviewResult review = svc.analyzeCode("code", "Java");
 
     assertThat(review.score()).isEqualTo(75);
     assertThat(review.findings()).hasSize(1);
@@ -114,7 +114,7 @@ class ClaudeServiceTest {
         };
 
     ClaudeService svc = buildService(exchange);
-    ReviewResponse review = svc.analyzeCode("code", "Java");
+    ClaudeReviewResult review = svc.analyzeCode("code", "Java");
 
     assertThat(calls.get()).isEqualTo(3);
     assertThat(review.score()).isEqualTo(75);

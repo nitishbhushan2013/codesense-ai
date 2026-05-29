@@ -1,6 +1,6 @@
 package com.codesense.service;
 
-import com.codesense.dto.ReviewResponse;
+import com.codesense.dto.ClaudeReviewResult;
 import com.codesense.exception.ClaudeApiException;
 import com.codesense.exception.ClaudeApiException.Reason;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -69,7 +69,7 @@ public class ClaudeService {
     this.retryBackoffMs = retryBackoffMs;
   }
 
-  public ReviewResponse analyzeCode(String code, String language) {
+  public ClaudeReviewResult analyzeCode(String code, String language) {
     if (apiKey == null || apiKey.isBlank()) {
       throw new ClaudeApiException(
           Reason.AUTH_ERROR, "Claude API key is not configured — set CLAUDE_API_KEY env var");
@@ -158,10 +158,10 @@ public class ClaudeService {
     }
   }
 
-  private ReviewResponse parseReview(String text) {
+  private ClaudeReviewResult parseReview(String text) {
     String cleaned = stripCodeFences(text).trim();
     try {
-      return objectMapper.readValue(cleaned, ReviewResponse.class);
+      return objectMapper.readValue(cleaned, ClaudeReviewResult.class);
     } catch (JsonProcessingException e) {
       throw new ClaudeApiException(
           Reason.PARSE_ERROR,

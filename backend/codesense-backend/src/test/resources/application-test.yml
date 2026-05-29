@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:codesense_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            scope: user:email
+
+app:
+  jwt:
+    secret: test-jwt-secret-key-minimum-thirty-two-chars-long-for-hs256
+    expiration: 86400000
+
+claude:
+  api:
+    key: test-claude-key
+    url: https://api.anthropic.com/v1/messages
+    model: claude-test-model
+    max-tokens: 4096
+    retry-backoff-ms: 0
+
+github:
+  api:
+    base-url: https://api.github.com
+    token: ""
+
+storage:
+  type: local
+  local:
+    path: ./local-storage-test/code-diffs
+
+logging:
+  level:
+    com.codesense: INFO
+    org.springframework.security: WARN

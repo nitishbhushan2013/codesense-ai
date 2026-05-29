@@ -1,7 +1,16 @@
 package com.codesense.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public record ReviewResponse(int score, String summary, List<FindingDto> findings) {}
+/** API-facing review payload returned by ReviewController. */
+public record ReviewResponse(
+    String id,
+    String submissionType,
+    String language,
+    String prUrl,
+    int score,
+    String summary,
+    String status,
+    List<FindingDto> findings,
+    LocalDateTime createdAt) {}
