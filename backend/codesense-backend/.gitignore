@@ -40,6 +40,10 @@ backend/codesense-backend/.mvn/
 backend/codesense-backend/*.log
 backend/codesense-backend/application-prod.yml
 
+# Secrets / local config (never commit real secrets) — see .env.example
+.env
+application-local.yml
+
 # Frontend
 frontend/codesense-frontend/node_modules/
 frontend/codesense-frontend/.next/
