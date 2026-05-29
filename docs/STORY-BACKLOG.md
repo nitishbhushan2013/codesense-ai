@@ -153,7 +153,7 @@ Done when: User can register, login, see name in navbar, and logout from browser
 
 ### STORY-108 — Secrets Hygiene
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Background: STORY-106 committed a real GitHub OAuth client_secret into
 `application.yml`. This story rotates the exposed secret and moves all
@@ -246,7 +246,7 @@ Done when: POST /api/reviews returns full structured review. Logged-in users hav
 
 ### STORY-205 — Review Results Page
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
@@ -284,7 +284,7 @@ Done when: Logged-in user sees all past reviews, can reopen and delete them.
 
 ### STORY-302 — Follow-up Chat Backend
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
@@ -391,8 +391,8 @@ Done when: App is polished, README complete, proud to share publicly.
 | Sprint     | Stories          | Status         |
 | ---------- | ---------------- | -------------- |
 | Pre-Sprint | STORY-000        | ✅ Complete    |
-| Sprint 1   | STORY-101 to 108 | 🔄 In Progress |
-| Sprint 2   | STORY-201 to 205 | 🔄 In Progress |
-| Sprint 3   | STORY-301 to 303 | ⏳ Pending     |
+| Sprint 1   | STORY-101 to 108 | ✅ Complete    |
+| Sprint 2   | STORY-201 to 205 | ✅ Complete    |
+| Sprint 3   | STORY-301 to 303 | 🔄 In Progress |
 | Sprint 4   | STORY-401 to 404 | ⏳ Pending     |
-| **Total**  | **19 stories**   | **9 complete** |
+| **Total**  | **19 stories**   | **15 complete** |
