@@ -40,6 +40,16 @@ claude:
     url: https://api.anthropic.com/v1/messages
     model: claude-sonnet-4-20250514
 
+github:
+  api:
+    base-url: https://api.github.com
+    token: ${GITHUB_API_TOKEN:}
+
+storage:
+  type: local
+  local:
+    path: ./local-storage/code-diffs
+
 logging:
   level:
     com.codesense: DEBUG

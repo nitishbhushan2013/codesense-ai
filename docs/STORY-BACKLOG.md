@@ -151,6 +151,30 @@ Done when: User can register, login, see name in navbar, and logout from browser
 
 ---
 
+### STORY-108 — Secrets Hygiene
+
+**Status: ⏳ PENDING**
+
+Background: STORY-106 committed a real GitHub OAuth client_secret into
+`application.yml`. This story rotates the exposed secret and moves all
+secrets out of source control before any further secret-bearing config is
+added (Claude API key, GitHub PAT, blob storage connection string, etc.).
+
+Tasks:
+
+- [ ] Rotate the exposed GitHub OAuth client secret in GitHub Developer Settings
+- [ ] Replace hardcoded secrets in application.yml with ${ENV_VAR} placeholders
+      (GITHUB_CLIENT_SECRET, JWT_SECRET, DB_PASSWORD, CLAUDE_API_KEY)
+- [ ] Add backend/codesense-backend/.env.example documenting required vars
+- [ ] Update .gitignore to exclude .env and application-local.yml
+- [ ] Document local dev setup in README (how to populate secrets)
+- [ ] Verify app still boots locally with env vars set
+
+Done when: No real secrets in committed files. App boots cleanly with secrets
+sourced from environment. .env.example lists every secret the app needs.
+
+---
+
 ## Sprint 2 — Core Value
 
 ### STORY-201 — Landing Page + Submission Form
@@ -171,15 +195,16 @@ Done when: Landing page renders cleanly. Both tabs work. Submitting triggers loa
 
 ### STORY-202 — GitHub PR Diff Fetching
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create GitHubService to fetch PR diff via GitHub REST API
-- [ ] Parse PR URL to extract owner, repo, PR number
-- [ ] Store raw diff in Azure Blob Storage
-- [ ] Handle errors: PR not found, private repo, rate limit
-- [ ] Write unit test with mocked GitHub API response
+- [x] Create GitHubService to fetch PR diff via GitHub REST API
+- [x] Parse PR URL to extract owner, repo, PR number
+- [x] Store raw diff in Azure Blob Storage *(local filesystem impl shipped;
+      Azure impl deferred to STORY-401 behind same StorageService interface)*
+- [x] Handle errors: PR not found, private repo, rate limit
+- [x] Write unit test with mocked GitHub API response
 
 Done when: Given valid public GitHub PR URL, service returns code diff and blob key.
 
@@ -366,8 +391,8 @@ Done when: App is polished, README complete, proud to share publicly.
 | Sprint     | Stories          | Status         |
 | ---------- | ---------------- | -------------- |
 | Pre-Sprint | STORY-000        | ✅ Complete    |
-| Sprint 1   | STORY-101 to 107 | ✅ Complete    |
+| Sprint 1   | STORY-101 to 108 | 🔄 In Progress |
 | Sprint 2   | STORY-201 to 205 | 🔄 In Progress |
 | Sprint 3   | STORY-301 to 303 | ⏳ Pending     |
 | Sprint 4   | STORY-401 to 404 | ⏳ Pending     |
-| **Total**  | **18 stories**   | **9 complete** |
+| **Total**  | **19 stories**   | **9 complete** |
