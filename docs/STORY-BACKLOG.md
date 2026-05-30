@@ -246,17 +246,17 @@ Done when: POST /api/reviews returns full structured review. Logged-in users hav
 
 ### STORY-205 — Review Results Page
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Build /review/[id] page
-- [ ] Build ReviewSummary component
-- [ ] Build ReviewCard component
-- [ ] Add category tabs: Bugs, Security, Performance, Quality
-- [ ] Add severity filter
-- [ ] Add copy-to-clipboard on fix snippets
-- [ ] Show sign-up nudge for anonymous users
+- [x] Build /review/[id] page
+- [x] Build ReviewSummary component
+- [x] Build ReviewCard component
+- [x] Add category tabs: Bugs, Security, Performance, Quality
+- [x] Add severity filter
+- [x] Add copy-to-clipboard on fix snippets
+- [x] Show sign-up nudge for anonymous users
 
 Done when: After submitting code, user sees full review with categorised findings and copyable fixes.
 
