@@ -300,15 +300,15 @@ Done when: Chat message returns streaming SSE response. History persists correct
 
 ### STORY-303 — Follow-up Chat UI
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Build ChatPanel component on review results page
-- [ ] Show chat only to logged-in users
-- [ ] Connect to SSE endpoint — stream response token by token
-- [ ] Auto-scroll to latest message
-- [ ] Load existing chat history on revisit
+- [x] Build ChatPanel component on review results page
+- [x] Show chat only to logged-in users
+- [x] Connect to SSE endpoint — stream response token by token
+- [x] Auto-scroll to latest message
+- [x] Load existing chat history on revisit
 
 Done when: Logged-in user can chat with AI about review in real time.
 
