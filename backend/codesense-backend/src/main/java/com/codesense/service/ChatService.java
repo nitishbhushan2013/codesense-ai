@@ -32,11 +32,13 @@ public class ChatService {
   public Flux<String> sendMessage(UUID reviewId, String userMessage, String userId) {
     Review review = loadAndAuthorise(reviewId, userId);
 
-    chatMessageRepository.save(
-        ChatMessage.builder().review(review).role("user").content(userMessage).build());
-
+    // Build history BEFORE persisting the new user message — otherwise the DB query
+    // inside buildMessageHistory() would include the just-saved message, duplicating it.
     List<Map<String, String>> messages = buildMessageHistory(reviewId, userMessage);
     String systemPrompt = buildSystemPrompt(review);
+
+    chatMessageRepository.save(
+        ChatMessage.builder().review(review).role("user").content(userMessage).build());
 
     StringBuilder collected = new StringBuilder();
 
