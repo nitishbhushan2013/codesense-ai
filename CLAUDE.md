@@ -12,6 +12,56 @@ This is a two-app monorepo (no root-level build tooling):
 
 Run all commands from the relevant app subdirectory, not the repo root.
 
+## Story workflow
+
+### Starting a story — run this gate first
+
+Before writing any code, run all three checks. If any fail, fix them before starting — they are not your story's fault but will block your commit at the end.
+
+**1. Frontend lint (catches pre-existing errors + broken imports)**
+```powershell
+cd frontend/codesense-frontend
+npm run lint
+```
+
+**2. Backend compile**
+```powershell
+cd backend/codesense-backend
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot"
+.\mvnw.cmd clean compile
+```
+
+**3. Full E2E suite (baseline green)**
+```powershell
+cd frontend/codesense-frontend
+npx playwright test --reporter=list
+```
+
+All three must pass before story work begins. Any failure is a pre-existing problem — fix it, commit it separately as `fix: pre-story lint/compile baseline`, then start the story.
+
+### Finishing a story — use `/complete-story`
+
+The `/complete-story` skill (`.claude/skills/complete-story/SKILL.md`) runs the pre-flight checks, creates a feature branch, commits, pushes, and opens the PR. Type `/complete-story` in a fresh session (skills load at session start).
+
+If in the same session as story work, run the steps manually:
+1. `npm run lint` → 0 errors
+2. `npx playwright test` → all green
+3. `.\mvnw.cmd clean compile` → BUILD SUCCESS
+4. `git checkout -b story-<ID>-<slug>`
+5. `git add <specific files>` — never `git add -A`
+6. `git commit -m "feat: STORY-<ID> …"`
+7. `git push -u origin HEAD`
+8. `gh pr create …`
+9. Mark story `✅ COMPLETE` in `docs/STORY-BACKLOG.md`
+
+### Deferring a task within a story
+
+If a story task cannot be completed in the session, explicitly note it before closing:
+- Update the task checkbox to `- [ ] <task> *(deferred to STORY-XXX)*`
+- Confirm with the user before calling the story done
+
+---
+
 ## Commands
 
 ### Backend (`backend/codesense-backend/`)
@@ -88,4 +138,4 @@ When adding fields to a review, both branches (`persistReview` and `ephemeralRes
 
 ## Implementation status vs. docs
 
-`docs/ARCHITECTURE.md` describes the full intended system; much of it is aspirational. Currently implemented: auth (email/password + GitHub OAuth) and `POST /api/reviews` (anonymous + persisted). **Not yet built**: `GET`/`DELETE /api/reviews`, the chat feature (`ChatController`, `ChatMessage`), and Azure infrastructure. Treat the architecture doc as design intent, not current state.
+`docs/ARCHITECTURE.md` describes the full intended system; much of it is aspirational. Currently implemented: auth (email/password + GitHub OAuth), `POST /api/reviews` (anonymous + persisted), `GET /api/reviews` (user history), `DELETE /api/reviews/{id}` (ownership-checked delete), and the `/dashboard` page. **Not yet built**: the chat feature (`ChatController`, `ChatMessage`), and Azure infrastructure. Treat the architecture doc as design intent, not current state.

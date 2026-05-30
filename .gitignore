@@ -1,8 +1,16 @@
 # Per-story personal design notes (kept locally, not shared)
 docs/STORY-[0-9]*.md
 
-# Local Claude Code config
-.claude/settings.json
-
 # E2E gate hook server logs
 .e2e-gate/
+
+# Dev server logs written by background processes
+backend/codesense-backend/backend.log
+frontend/codesense-frontend/frontend.log
+
+# Windows crash dumps from Git-bundled bash (bash.exe.stackdump)
+*.stackdump
+
+# Claude Code local session settings (permissions are machine-specific)
+.claude/settings.json
+.claude/settings.local.json

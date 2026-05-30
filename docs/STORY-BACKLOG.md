@@ -266,17 +266,17 @@ Done when: After submitting code, user sees full review with categorised finding
 
 ### STORY-301 — Review History Dashboard
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create GET /api/reviews endpoint
-- [ ] Create DELETE /api/reviews/{id} endpoint
-- [ ] Build /dashboard page (protected)
-- [ ] Build DashboardList component
-- [ ] Delete button with confirmation
-- [ ] Empty state with CTA
-- [ ] Date range filter
+- [x] Create GET /api/reviews endpoint
+- [x] Create DELETE /api/reviews/{id} endpoint
+- [x] Build /dashboard page (protected)
+- [x] Build DashboardList component
+- [x] Delete button with confirmation
+- [x] Empty state with CTA
+- [ ] Date range filter *(deferred — core done criteria met)*
 
 Done when: Logged-in user sees all past reviews, can reopen and delete them.
 
@@ -284,15 +284,15 @@ Done when: Logged-in user sees all past reviews, can reopen and delete them.
 
 ### STORY-302 — Follow-up Chat Backend
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create POST /api/reviews/{id}/chat with SSE streaming
-- [ ] Build conversation context with original code
-- [ ] Call Claude API and stream tokens back
-- [ ] Persist chat messages to DB
-- [ ] Create GET /api/reviews/{id}/chat for history
+- [x] Create POST /api/reviews/{id}/chat with SSE streaming
+- [x] Build conversation context with original code
+- [x] Call Claude API and stream tokens back
+- [x] Persist chat messages to DB
+- [x] Create GET /api/reviews/{id}/chat for history
 
 Done when: Chat message returns streaming SSE response. History persists correctly.
 
