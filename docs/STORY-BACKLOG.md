@@ -266,17 +266,17 @@ Done when: After submitting code, user sees full review with categorised finding
 
 ### STORY-301 — Review History Dashboard
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create GET /api/reviews endpoint
-- [ ] Create DELETE /api/reviews/{id} endpoint
-- [ ] Build /dashboard page (protected)
-- [ ] Build DashboardList component
-- [ ] Delete button with confirmation
-- [ ] Empty state with CTA
-- [ ] Date range filter
+- [x] Create GET /api/reviews endpoint
+- [x] Create DELETE /api/reviews/{id} endpoint
+- [x] Build /dashboard page (protected)
+- [x] Build DashboardList component
+- [x] Delete button with confirmation
+- [x] Empty state with CTA
+- [ ] Date range filter *(deferred — core done criteria met)*
 
 Done when: Logged-in user sees all past reviews, can reopen and delete them.
 
