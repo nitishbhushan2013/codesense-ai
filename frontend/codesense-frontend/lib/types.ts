@@ -1,3 +1,6 @@
+export type FindingCategory = "bug" | "security" | "performance" | "quality";
+export type FindingSeverity = "critical" | "warning" | "info";
+
 export interface User {
   id: string;
   name: string;
@@ -7,8 +10,8 @@ export interface User {
 
 export interface Finding {
   id: string;
-  category: "bug" | "security" | "performance" | "quality";
-  severity: "critical" | "warning" | "info";
+  category: FindingCategory;
+  severity: FindingSeverity;
   lineReference: string;
   description: string;
   suggestedFix: string;
