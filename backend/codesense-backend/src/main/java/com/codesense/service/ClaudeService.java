@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 @Service
 @Slf4j
@@ -198,6 +199,70 @@ public class ClaudeService {
     return new ClaudeApiException(
         Reason.BAD_REQUEST,
         "Claude API rejected request (" + status + "): " + e.getResponseBodyAsString());
+  }
+
+  /**
+   * Streams a multi-turn chat via Claude's SSE API. Returns a Flux of text chunks as they arrive.
+   * The caller is responsible for persisting messages before and after the stream.
+   */
+  public Flux<String> streamChat(List<Map<String, String>> messages, String systemPrompt) {
+    if (apiKey == null || apiKey.isBlank()) {
+      return Flux.error(
+          new ClaudeApiException(
+              Reason.AUTH_ERROR, "Claude API key is not configured — set CLAUDE_API_KEY env var"));
+    }
+
+    Map<String, Object> body =
+        Map.of(
+            "model", model,
+            "max_tokens", maxTokens,
+            "system", systemPrompt,
+            "messages", messages,
+            "stream", true);
+
+    return webClient
+        .post()
+        .headers(this::applyHeaders)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(body)
+        .retrieve()
+        .onStatus(
+            status -> status.is4xxClientError() || status.is5xxServerError(),
+            response ->
+                response
+                    .bodyToMono(String.class)
+                    .map(
+                        body2 ->
+                            (RuntimeException)
+                                new ClaudeApiException(
+                                    response.statusCode().value() == 429
+                                        ? Reason.RATE_LIMITED
+                                        : Reason.SERVER_ERROR,
+                                    "Claude stream error " + response.statusCode())))
+        .bodyToFlux(String.class)
+        .filter(line -> line.startsWith("data: "))
+        .map(line -> line.substring(6).trim())
+        .filter(data -> !data.isBlank() && !data.equals("[DONE]"))
+        .flatMap(
+            data -> {
+              try {
+                JsonNode node = objectMapper.readTree(data);
+                if ("content_block_delta".equals(node.path("type").asText())) {
+                  String text = node.path("delta").path("text").asText("");
+                  if (!text.isEmpty()) {
+                    return Flux.just(text);
+                  }
+                }
+              } catch (JsonProcessingException e) {
+                log.debug("Skipping unparseable SSE line: {}", e.getMessage());
+              }
+              return Flux.empty();
+            })
+        .onErrorMap(
+            WebClientResponseException.class,
+            e ->
+                new ClaudeApiException(
+                    Reason.UNAVAILABLE, "Claude stream failed: " + e.getMessage(), e));
   }
 
   private void sleepBackoff(int attempt) {
