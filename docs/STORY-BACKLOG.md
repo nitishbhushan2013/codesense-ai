@@ -153,7 +153,7 @@ Done when: User can register, login, see name in navbar, and logout from browser
 
 ### STORY-108 — Secrets Hygiene
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Background: STORY-106 committed a real GitHub OAuth client_secret into
 `application.yml`. This story rotates the exposed secret and moves all
@@ -162,13 +162,13 @@ added (Claude API key, GitHub PAT, blob storage connection string, etc.).
 
 Tasks:
 
-- [ ] Rotate the exposed GitHub OAuth client secret in GitHub Developer Settings
-- [ ] Replace hardcoded secrets in application.yml with ${ENV_VAR} placeholders
+- [ ] Rotate the exposed GitHub OAuth client secret in GitHub Developer Settings *(manual — owner action required)*
+- [x] Replace hardcoded secrets in application.yml with ${ENV_VAR} placeholders
       (GITHUB_CLIENT_SECRET, JWT_SECRET, DB_PASSWORD, CLAUDE_API_KEY)
-- [ ] Add backend/codesense-backend/.env.example documenting required vars
-- [ ] Update .gitignore to exclude .env and application-local.yml
-- [ ] Document local dev setup in README (how to populate secrets)
-- [ ] Verify app still boots locally with env vars set
+- [x] Add backend/codesense-backend/.env.example documenting required vars
+- [x] Update .gitignore to exclude .env and application-local.yml
+- [x] Document local dev setup in README (how to populate secrets)
+- [x] Verify app still boots locally with env vars set
 
 Done when: No real secrets in committed files. App boots cleanly with secrets
 sourced from environment. .env.example lists every secret the app needs.

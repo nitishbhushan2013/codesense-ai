@@ -1,6 +1,12 @@
 # Per-story personal design notes (kept locally, not shared)
 docs/STORY-[0-9]*.md
 
+# Local secrets — NEVER commit these
+.env
+.env.local
+.env.*.local
+backend/codesense-backend/application-local.yml
+
 # E2E gate hook server logs
 .e2e-gate/
 
