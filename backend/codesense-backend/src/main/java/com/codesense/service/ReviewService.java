@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +61,18 @@ public class ReviewService {
       return persistReview(request, aiResult, blobKey, language, userId);
     }
     return ephemeralResponse(request, aiResult, language);
+  }
+
+  public ReviewResponse getById(UUID id, String userId) {
+    Review review =
+        reviewRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
+    if (review.getUser() == null || !review.getUser().getId().toString().equals(userId)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+    }
+    return toResponse(review);
   }
 
   private ReviewResponse persistReview(
