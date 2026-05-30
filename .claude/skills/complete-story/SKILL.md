@@ -10,6 +10,7 @@ description: When a story is done — E2E tests green, lint passing — commit a
 3. Stages and commits all changes with a conventional commit message
 4. Pushes the branch to origin
 5. Opens a PR against `main` via `gh pr create`
+6. Creates `docs/STORY-<ID>.md` locally with design decisions, rationale, and Q&A
 
 ## Pre-flight checklist (run these first, stop if any fail)
 
@@ -102,12 +103,23 @@ EOF
 )" --base main
 ```
 
-## Step 5 — Report to user
+## Step 5 — Create local design notes
+
+Create `docs/STORY-<ID>.md` (this file is gitignored — local only). Use the format from existing notes (`docs/STORY-302.md` is a good reference). Cover:
+
+- **Design selected** — key decisions made (architecture choices, patterns used, trade-offs accepted)
+- **Solution design walkthrough** — why each non-obvious choice was made, with short code snippets where helpful
+- **Potential Q&A** — questions a reviewer or future maintainer might ask, with direct answers
+
+Write this *from memory of the session* — what was surprising, what the linter forced, what alternatives were rejected, what the next person needs to know. Skip anything obvious from the code itself.
+
+## Step 6 — Report to user
 
 Tell the user:
 - The PR URL
 - Which scenarios passed in E2E
 - Mark the story as ✅ COMPLETE in `docs/STORY-BACKLOG.md`
+- Confirm `docs/STORY-<ID>.md` was created locally
 - Suggest the next pending story
 
 ## Important rules

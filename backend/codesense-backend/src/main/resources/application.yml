@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/codesense_db
     username: postgres
-    password: postgres
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,8 +22,8 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23lio4qDBYKi2LYvZC
-            client-secret: be9f0ecf87ae2d3586d353a42c2f65a8335a5cf0
+            client-id: ${GITHUB_CLIENT_ID:Ov23lio4qDBYKi2LYvZC}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope: user:email
 
 server:
@@ -31,7 +31,7 @@ server:
 
 app:
   jwt:
-    secret: your-jwt-secret-key-change-this-in-production-minimum-32-chars
+    secret: ${JWT_SECRET:local-dev-secret-change-this-before-any-real-use-minimum-32c}
     expiration: 86400000
 
 claude:
