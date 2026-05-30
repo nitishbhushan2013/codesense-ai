@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "@/lib/api";
-import type { SubmissionRequest } from "@/lib/types";
+import { useReview } from "@/app/review-context";
+import type { SubmissionRequest, Review } from "@/lib/types";
 
 type Tab = "pr_url" | "paste";
 
@@ -22,6 +24,8 @@ const LANGUAGES = [
 const PR_URL_REGEX = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/;
 
 export default function SubmitForm() {
+  const router = useRouter();
+  const { setReview } = useReview();
   const [tab, setTab] = useState<Tab>("pr_url");
   const [prUrl, setPrUrl] = useState("");
   const [code, setCode] = useState("");
@@ -62,8 +66,9 @@ export default function SubmitForm() {
 
     setLoading(true);
     try {
-      await api.post("/api/reviews", payload);
-      // Navigation to /review/[id] is wired up in STORY-205.
+      const { data } = await api.post<Review>("/api/reviews", payload);
+      setReview(data);
+      router.push(`/review/${data.id ?? "anon"}`);
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
