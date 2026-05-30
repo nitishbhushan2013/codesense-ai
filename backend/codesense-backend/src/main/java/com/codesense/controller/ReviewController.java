@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -71,6 +72,21 @@ public class ReviewController {
       case RATE_LIMITED -> HttpStatus.TOO_MANY_REQUESTS;
       case SERVER_ERROR, UNAVAILABLE, PARSE_ERROR -> HttpStatus.BAD_GATEWAY;
     };
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getReview(
+      @PathVariable UUID id, @AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Unauthorized"));
+    }
+    try {
+      ReviewResponse response = reviewService.getById(id, userDetails.getUsername());
+      return ResponseEntity.ok(response);
+    } catch (ResponseStatusException e) {
+      return ResponseEntity.status(e.getStatusCode())
+          .body(Map.of("message", e.getReason() != null ? e.getReason() : "Error"));
+    }
   }
 
   @GetMapping
