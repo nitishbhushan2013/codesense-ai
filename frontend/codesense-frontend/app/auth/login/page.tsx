@@ -25,8 +25,13 @@ export default function LoginPage() {
       await api.post("/api/auth/login", form);
       await refreshUser();
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid email or password");
+    } catch (err) {
+      const msg =
+        err instanceof Object && "response" in err
+          ? (err as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : undefined;
+      setError(msg || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -107,7 +112,7 @@ export default function LoginPage() {
 
           {/* Register link */}
           <p className="text-center text-gray-400 text-sm mt-6">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/auth/register"
               className="text-blue-400 hover:text-blue-300 transition"
