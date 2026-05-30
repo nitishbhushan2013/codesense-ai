@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/auth-context";
+import DashboardList from "@/components/DashboardList";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -32,26 +33,11 @@ export default function DashboardPage() {
           Welcome back, {user.name} 👋
         </h1>
         <p className="text-gray-400">
-          Your AI code review history will appear here.
+          Your AI code review history
         </p>
       </div>
 
-      {/* Empty state */}
-      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-16 text-center">
-        <div className="text-6xl mb-4">🔍</div>
-        <h2 className="text-xl font-semibold text-white mb-2">
-          No reviews yet
-        </h2>
-        <p className="text-gray-400 mb-6">
-          Submit your first PR or paste code to get an AI review
-        </p>
-        <a
-          href="/"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition"
-        >
-          Run your first review
-        </a>
-      </div>
+      <DashboardList />
     </div>
   );
 }

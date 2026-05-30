@@ -50,7 +50,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    refreshUser();
+    const load = async () => {
+      try {
+        const response = await api.get("/api/auth/me");
+        setUser(response.data);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, []);
 
   return (

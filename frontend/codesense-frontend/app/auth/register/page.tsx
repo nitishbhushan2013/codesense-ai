@@ -44,8 +44,13 @@ export default function RegisterPage() {
       });
       await refreshUser();
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+    } catch (err) {
+      const msg =
+        err instanceof Object && "response" in err
+          ? (err as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : undefined;
+      setError(msg || "Registration failed");
     } finally {
       setLoading(false);
     }

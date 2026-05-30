@@ -69,11 +69,13 @@ export default function SubmitForm() {
       const { data } = await api.post<Review>("/api/reviews", payload);
       setReview(data);
       router.push(`/review/${data.id ?? "anon"}`);
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-          "Review engine is not yet available. Please try again soon.",
-      );
+    } catch (err) {
+      const msg =
+        err instanceof Object && "response" in err
+          ? (err as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : undefined;
+      setError(msg || "Review engine is not yet available. Please try again soon.");
     } finally {
       setLoading(false);
     }
