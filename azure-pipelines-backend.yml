@@ -1,0 +1,77 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - backend/**
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  JAVA_HOME: /usr/lib/jvm/temurin-21-amd64
+  APP_SERVICE_NAME: codesense-backend
+  RESOURCE_GROUP: codesense-rg
+
+stages:
+  - stage: Build
+    displayName: Build & Test
+    jobs:
+      - job: Build
+        steps:
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '21'
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+
+          - script: |
+              cd backend/codesense-backend
+              ./mvnw clean package -DskipTests -q
+            displayName: Maven package
+
+          - script: |
+              cd backend/codesense-backend
+              ./mvnw test -q
+            displayName: Run tests
+            env:
+              SPRING_PROFILES_ACTIVE: test
+
+          - task: CopyFiles@2
+            inputs:
+              sourceFolder: backend/codesense-backend/target
+              contents: '*.jar'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)
+              artifactName: backend-jar
+
+  - stage: Deploy
+    displayName: Deploy to Azure App Service
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployBackend
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@1
+                  inputs:
+                    artifactName: backend-jar
+                    downloadPath: $(Pipeline.Workspace)
+
+                - task: AzureWebApp@1
+                  displayName: Deploy JAR to App Service
+                  inputs:
+                    azureSubscription: codesense-azure-connection
+                    appType: webAppLinux
+                    appName: $(APP_SERVICE_NAME)
+                    resourceGroupName: $(RESOURCE_GROUP)
+                    package: $(Pipeline.Workspace)/backend-jar/*.jar
+                    runtimeStack: JAVA|21-java21
+                    startUpCommand: 'java -jar /home/site/wwwroot/*.jar'

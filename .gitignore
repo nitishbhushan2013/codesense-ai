@@ -1,5 +1,8 @@
 # Per-story personal design notes (kept locally, not shared)
 docs/STORY-[0-9]*.md
+# ...but briefs and decisions docs are shared (committed)
+!docs/STORY-[0-9]*-brief.md
+!docs/STORY-[0-9]*-decisions.md
 
 # Architecture decision records (kept locally, not shared)
 docs/*Decision.md
