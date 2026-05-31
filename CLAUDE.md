@@ -12,6 +12,18 @@ This is a two-app monorepo (no root-level build tooling):
 
 Run all commands from the relevant app subdirectory, not the repo root.
 
+## Problem resolution log (standing instruction)
+
+`docs/problem_resolution.md` is a local-only living document (gitignored). **Whenever any issue is discussed — a bug, a deployment failure, a configuration problem, a gotcha — add an entry to this file.** Each entry must include:
+
+- A short ID (P-NNN), title, date, and story reference
+- **Symptom** — what the user observed
+- **Root cause** — why it happened
+- **Fix** — exact commands or code changes that resolved it
+- **Prevention** — what to do differently next time
+
+This file is the first place to check before debugging any recurring problem.
+
 ## Story workflow
 
 ### Starting a story — run this gate first

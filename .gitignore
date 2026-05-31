@@ -10,6 +10,9 @@ docs/*Decision.md
 # Azure provision & deployment living reference (kept locally, not shared)
 docs/azure-provision-deployment.md
 
+# Problem resolution log (kept locally, not shared)
+docs/problem_resolution.md
+
 # Local secrets — NEVER commit these
 .env
 .env.local
