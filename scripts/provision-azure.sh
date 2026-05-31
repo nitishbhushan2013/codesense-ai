@@ -16,7 +16,7 @@ set -euo pipefail
 # CONFIGURATION — edit these before running
 # =============================================================================
 
-SUBSCRIPTION_ID=""                      # az account show --query id -o tsv
+SUBSCRIPTION_ID="be983e5c-ef43-412c-bf20-ab99a8548e65"                      # az account show --query id -o tsv
 LOCATION="australiaeast"                # az account list-locations -o table
 RESOURCE_GROUP="codesense-rg"
 
@@ -215,7 +215,7 @@ echo "==> Creating Static Web App: $STATIC_WEB_APP"
 az staticwebapp create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$STATIC_WEB_APP" \
-  --location "$LOCATION" \
+  --location "eastus2" \
   --source "https://github.com/nitishbhushan2013/codesense-ai" \
   --branch "main" \
   --app-location "frontend/codesense-frontend" \

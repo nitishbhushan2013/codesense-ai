@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/auth-context";
+import api from "@/lib/api";
 import type { ChatMessage } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
@@ -14,13 +15,14 @@ export default function ChatPanel({ reviewId }: { reviewId: string }) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const xhrRef = useRef<XMLHttpRequest | null>(null);
 
+  // Load history via axios (withCredentials — same as all other API calls)
   useEffect(() => {
     if (!user || reviewId === "anon") return;
-
-    fetch(`${API_URL}/api/reviews/${reviewId}/chat`, { credentials: "include" })
-      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
-      .then((data: ChatMessage[]) => setMessages(data))
+    api
+      .get<ChatMessage[]>(`/api/reviews/${reviewId}/chat`)
+      .then(({ data }) => setMessages(data))
       .catch(() => {});
   }, [user, reviewId]);
 
@@ -28,7 +30,7 @@ export default function ChatPanel({ reviewId }: { reviewId: string }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
     const text = input.trim();
     if (!text || isStreaming) return;
 
@@ -39,70 +41,88 @@ export default function ChatPanel({ reviewId }: { reviewId: string }) {
 
     setMessages((prev) => [
       ...prev,
-      { id: `local-${Date.now()}`, role: "user", content: text, createdAt: new Date().toISOString() },
-      { id: streamId, role: "assistant", content: "", createdAt: new Date().toISOString() },
+      {
+        id: `local-${Date.now()}`,
+        role: "user",
+        content: text,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: streamId,
+        role: "assistant",
+        content: "",
+        createdAt: new Date().toISOString(),
+      },
     ]);
     setIsStreaming(true);
 
-    try {
-      const response = await fetch(`${API_URL}/api/reviews/${reviewId}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ message: text }),
-      });
+    // Use XHR with withCredentials — sends HttpOnly cookies reliably
+    const xhr = new XMLHttpRequest();
+    xhrRef.current = xhr;
+    xhr.withCredentials = true;
+    xhr.open("POST", `${API_URL}/api/reviews/${reviewId}/chat`);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-      if (!response.ok || !response.body) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+    let processedLength = 0;
+    let buffer = "";
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
+    const parseChunk = (newData: string) => {
+      buffer += newData;
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop() ?? "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      for (const part of parts) {
+        const lines = part.split("\n");
+        const eventLine = lines.find((l) => l.startsWith("event:"));
+        const dataLine = lines.find((l) => l.startsWith("data:"));
 
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split("\n\n");
-        buffer = parts.pop() ?? "";
+        if (eventLine?.includes("error")) {
+          setError("The AI encountered an error. Please try again.");
+          setMessages((prev) => prev.filter((m) => m.id !== streamId));
+          setIsStreaming(false);
+          return;
+        }
 
-        for (const part of parts) {
-          const lines = part.split("\n");
-          const eventLine = lines.find((l) => l.startsWith("event:"));
-          const dataLine = lines.find((l) => l.startsWith("data:"));
-
-          if (eventLine?.includes("error")) {
-            throw new Error("The AI encountered an error. Please try again.");
-          }
-
-          if (dataLine) {
-            const chunk = dataLine.slice(5).trim();
-            if (chunk) {
-              setMessages((prev) => {
-                const updated = [...prev];
-                const last = updated[updated.length - 1];
-                if (last?.role === "assistant") {
-                  updated[updated.length - 1] = {
-                    ...last,
-                    content: last.content + chunk,
-                  };
-                }
-                return updated;
-              });
-            }
+        if (dataLine) {
+          const chunk = dataLine.slice(5).trim();
+          if (chunk) {
+            setMessages((prev) => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last?.role === "assistant") {
+                updated[updated.length - 1] = {
+                  ...last,
+                  content: last.content + chunk,
+                };
+              }
+              return updated;
+            });
           }
         }
       }
-    } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : "Failed to send message. Please try again.";
-      setError(msg);
-      setMessages((prev) => prev.filter((m) => m.id !== streamId));
-    } finally {
+    };
+
+    xhr.onprogress = () => {
+      const newData = xhr.responseText.slice(processedLength);
+      processedLength = xhr.responseText.length;
+      parseChunk(newData);
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 401 || xhr.status === 403) {
+        setError("Authentication error. Please log out and log in again.");
+        setMessages((prev) => prev.filter((m) => m.id !== streamId));
+      }
       setIsStreaming(false);
-    }
+    };
+
+    xhr.onerror = () => {
+      setError("Failed to send message. Please try again.");
+      setMessages((prev) => prev.filter((m) => m.id !== streamId));
+      setIsStreaming(false);
+    };
+
+    xhr.send(JSON.stringify({ message: text }));
   };
 
   if (loading) return null;
@@ -130,7 +150,9 @@ export default function ChatPanel({ reviewId }: { reviewId: string }) {
     >
       <div className="px-6 py-4 border-b border-gray-700 flex-shrink-0">
         <h2 className="text-white font-semibold">Chat with AI</h2>
-        <p className="text-gray-400 text-sm">Ask follow-up questions about this review</p>
+        <p className="text-gray-400 text-sm">
+          Ask follow-up questions about this review
+        </p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">

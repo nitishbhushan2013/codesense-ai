@@ -33,6 +33,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
     String token = extractTokenFromCookie(request);
 
+    log.debug(
+        "JWT filter: {} {} | cookies={} | token={}",
+        request.getMethod(),
+        request.getRequestURI(),
+        request.getCookies() != null
+            ? Arrays.stream(request.getCookies())
+                .map(Cookie::getName)
+                .collect(java.util.stream.Collectors.joining(","))
+            : "NONE",
+        token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "NULL");
+
     if (token != null && jwtService.isTokenValid(token)) {
       String userId = jwtService.extractUserId(token);
       String email = jwtService.extractEmail(token);
