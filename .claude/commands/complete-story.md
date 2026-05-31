@@ -10,7 +10,8 @@ description: When a story is done — E2E tests green, lint passing — commit a
 3. Stages and commits all changes with a conventional commit message
 4. Pushes the branch to origin
 5. Opens a PR against `main` via `gh pr create`
-6. Creates `docs/STORY-<ID>.md` locally with design decisions, rationale, and Q&A
+6. Writes `docs/STORY-<ID>-decisions.md` — a committed living document capturing implementation discussion, decisions, and trade-offs
+7. Creates `docs/STORY-<ID>.md` locally with scratch notes and Q&A (gitignored)
 
 ## Pre-flight checklist (run these first, stop if any fail)
 
@@ -103,23 +104,66 @@ EOF
 )" --base main
 ```
 
-## Step 5 — Create local design notes
+## Step 5 — Write the decisions document (committed)
 
-Create `docs/STORY-<ID>.md` (this file is gitignored — local only). Use the format from existing notes (`docs/STORY-302.md` is a good reference). Cover:
+Create `docs/STORY-<ID>-decisions.md` and commit it to the feature branch. This is a **living document** — not scratch notes. Write it so a developer who wasn't in the session can understand what was built, why it was built that way, and what they'd need to know to change it safely.
 
-- **Design selected** — key decisions made (architecture choices, patterns used, trade-offs accepted)
-- **Solution design walkthrough** — why each non-obvious choice was made, with short code snippets where helpful
-- **Potential Q&A** — questions a reviewer or future maintainer might ask, with direct answers
+Structure:
 
-Write this *from memory of the session* — what was surprising, what the linter forced, what alternatives were rejected, what the next person needs to know. Skip anything obvious from the code itself.
+```markdown
+# STORY-<ID> — <Title> · Implementation Decisions
 
-## Step 6 — Report to user
+## What was built
+<2–3 sentences. The feature, its scope, and how it fits the system.>
+
+## Key decisions
+
+### <Decision 1 title>
+**Context:** <what situation forced this choice>
+**Decision:** <what was chosen>
+**Why:** <rationale — trade-offs accepted, alternatives rejected>
+**Implications:** <what this means for future work or other parts of the system>
+
+### <Decision 2 title>
+... repeat for each non-obvious choice ...
+
+## Technical challenges
+
+### <Challenge title>
+**Problem:** <what went wrong or was unclear>
+**How it was resolved:** <the fix or workaround>
+**Why this matters:** <what would break if someone undoes this>
+
+## What to watch out for
+<Bullet list of gotchas, constraints, or things that surprised us during implementation.>
+```
+
+Rules:
+- Only write decisions and challenges that aren't obvious from reading the code
+- Include concrete details: env var names, method signatures, error messages encountered
+- If a library behaved unexpectedly, document the exact behaviour
+- Keep each section tight — 3–5 sentences max per entry
+
+Stage and commit this file before creating the PR:
+```powershell
+git add docs/STORY-<ID>-decisions.md
+git commit -m "docs: STORY-<ID> implementation decisions"
+```
+
+## Step 6 — Create local scratch notes
+
+Create `docs/STORY-<ID>.md` (gitignored — local only). Use this for raw Q&A, rejected ideas, and anything too messy for the decisions doc. Cover:
+
+- **Potential Q&A** — questions a reviewer might ask, with direct answers
+- **Alternatives rejected** — options that were considered but dropped and why
+
+## Step 7 — Report to user
 
 Tell the user:
 - The PR URL
 - Which scenarios passed in E2E
 - Mark the story as ✅ COMPLETE in `docs/STORY-BACKLOG.md`
-- Confirm `docs/STORY-<ID>.md` was created locally
+- Confirm `docs/STORY-<ID>-decisions.md` was committed and `docs/STORY-<ID>.md` was created locally
 - Suggest the next pending story
 
 ## Important rules
