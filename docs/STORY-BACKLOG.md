@@ -337,14 +337,14 @@ Done when: All Azure resources exist and are configured.
 
 ### STORY-402 — Backend Azure Deployment
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Configure application-prod.yml
-- [ ] Connect App Service to Key Vault via Managed Identity
-- [ ] Create azure-pipelines-backend.yml
-- [ ] Push to main and verify pipeline deploys
+- [x] Configure application-prod.yml
+- [x] Connect App Service to Key Vault via Managed Identity
+- [x] Create CI/CD pipeline (GitHub Actions — azure-pipelines replaced by .github/workflows/deploy-backend.yml)
+- [x] Push to main and verify pipeline deploys
 - [ ] Test all APIs against live Azure URL
 
 Done when: Backend is live on Azure App Service.

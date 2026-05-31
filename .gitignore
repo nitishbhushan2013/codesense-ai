@@ -7,6 +7,9 @@ docs/STORY-[0-9]*.md
 # Architecture decision records (kept locally, not shared)
 docs/*Decision.md
 
+# Azure provision & deployment living reference (kept locally, not shared)
+docs/azure-provision-deployment.md
+
 # Local secrets — NEVER commit these
 .env
 .env.local
