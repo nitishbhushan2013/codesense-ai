@@ -21,6 +21,10 @@ spring:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
             scope: user:email
+            redirect-uri: https://codesense-backend.azurewebsites.net/login/oauth2/code/github
+
+server:
+  forward-headers-strategy: native
 
 storage:
   type: azure
