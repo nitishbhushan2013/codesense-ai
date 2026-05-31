@@ -68,7 +68,7 @@ stages:
                 - task: AzureWebApp@1
                   displayName: Deploy JAR to App Service
                   inputs:
-                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    azureSubscription: codesense-azure-connection
                     appType: webAppLinux
                     appName: $(APP_SERVICE_NAME)
                     resourceGroupName: $(RESOURCE_GROUP)
