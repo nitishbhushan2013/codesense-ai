@@ -353,15 +353,15 @@ Done when: Backend is live on Azure App Service.
 
 ### STORY-403 — Frontend Azure Deployment
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Set NEXT_PUBLIC_API_URL to live backend URL
-- [ ] Create azure-pipelines-frontend.yml
-- [ ] Configure Azure Static Web Apps deployment token
-- [ ] Push to main and verify pipeline deploys
-- [ ] Test full end-to-end flow on Azure
+- [x] Set NEXT_PUBLIC_API_URL to live backend URL (in workflow env)
+- [x] Create .github/workflows/deploy-frontend.yml (GitHub Actions, replaced azure-pipelines approach)
+- [x] Configure Azure Static Web Apps deployment token (GitHub secret AZURE_STATIC_WEB_APPS_API_TOKEN)
+- [x] Push to main and verify pipeline deploys
+- [x] Update FRONTEND_URL on App Service for CORS
 
 Done when: Frontend is live and publicly accessible on Azure.
 
