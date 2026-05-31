@@ -3,6 +3,7 @@ package com.codesense.controller;
 import com.codesense.dto.ChatMessageDto;
 import com.codesense.dto.ChatRequest;
 import com.codesense.service.ChatService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,10 @@ public class ChatController {
   public SseEmitter sendMessage(
       @PathVariable UUID id,
       @Valid @RequestBody ChatRequest request,
-      @AuthenticationPrincipal UserDetails userDetails) {
+      @AuthenticationPrincipal UserDetails userDetails,
+      HttpServletResponse response) {
+    response.setHeader("X-Accel-Buffering", "no");
+    response.setHeader("Cache-Control", "no-cache");
 
     if (userDetails == null) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

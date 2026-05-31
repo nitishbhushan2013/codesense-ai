@@ -4,10 +4,12 @@ import com.codesense.dto.AuthResponse;
 import com.codesense.dto.LoginRequest;
 import com.codesense.dto.RegisterRequest;
 import com.codesense.service.AuthService;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,16 +35,12 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> login(
-      @Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+      @Valid @RequestBody LoginRequest request,
+      HttpServletRequest servletRequest,
+      HttpServletResponse response) {
     try {
       String token = authService.login(request);
-
-      Cookie cookie = new Cookie("jwt", token);
-      cookie.setHttpOnly(true);
-      cookie.setPath("/");
-      cookie.setMaxAge(86400);
-      response.addCookie(cookie);
-
+      setJwtCookie(response, token, servletRequest.isSecure());
       return ResponseEntity.ok(AuthResponse.builder().message("Login successful").build());
     } catch (RuntimeException e) {
       return ResponseEntity.badRequest()
@@ -63,13 +61,29 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<AuthResponse> logout(HttpServletResponse response) {
-    Cookie cookie = new Cookie("jwt", null);
-    cookie.setHttpOnly(true);
-    cookie.setPath("/");
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
-
+  public ResponseEntity<AuthResponse> logout(
+      HttpServletRequest servletRequest, HttpServletResponse response) {
+    ResponseCookie cookie =
+        ResponseCookie.from("jwt", "")
+            .httpOnly(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite(servletRequest.isSecure() ? "None" : "Lax")
+            .secure(servletRequest.isSecure())
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     return ResponseEntity.ok(AuthResponse.builder().message("Logged out successfully").build());
+  }
+
+  private void setJwtCookie(HttpServletResponse response, String token, boolean secure) {
+    ResponseCookie cookie =
+        ResponseCookie.from("jwt", token)
+            .httpOnly(true)
+            .path("/")
+            .maxAge(86400)
+            .sameSite(secure ? "None" : "Lax")
+            .secure(secure)
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
   }
 }
