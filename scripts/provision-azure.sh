@@ -16,7 +16,7 @@ set -euo pipefail
 # CONFIGURATION — edit these before running
 # =============================================================================
 
-SUBSCRIPTION_ID="be983e5c-ef43-412c-bf20-ab99a8548e65"                      # az account show --query id -o tsv
+SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"                      # az account show --query id -o tsv
 LOCATION="australiaeast"                # az account list-locations -o table
 RESOURCE_GROUP="codesense-rg"
 
