@@ -318,18 +318,18 @@ Done when: Logged-in user can chat with AI about review in real time.
 
 ### STORY-401 — Azure Resource Provisioning
 
-**Status: ⏳ PENDING**
+**Status: ✅ COMPLETE**
 
 Tasks:
 
-- [ ] Create Resource Group codesense-rg
-- [ ] Provision Azure Database for PostgreSQL
-- [ ] Run database schema SQL scripts
-- [ ] Provision Azure Blob Storage
-- [ ] Provision Azure Key Vault with all secrets
-- [ ] Provision Azure App Service
-- [ ] Provision Azure Static Web Apps
-- [ ] Provision Azure Application Insights
+- [x] Create Resource Group codesense-rg
+- [x] Provision Azure Database for PostgreSQL
+- [x] Run database schema SQL scripts
+- [x] Provision Azure Blob Storage
+- [x] Provision Azure Key Vault with all secrets
+- [x] Provision Azure App Service
+- [x] Provision Azure Static Web Apps
+- [x] Provision Azure Application Insights
 
 Done when: All Azure resources exist and are configured.
 

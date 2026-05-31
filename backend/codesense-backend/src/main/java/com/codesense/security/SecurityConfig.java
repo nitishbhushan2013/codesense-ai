@@ -1,5 +1,7 @@
 package com.codesense.security;
 
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -20,19 +25,37 @@ public class SecurityConfig {
   private final JwtFilter jwtFilter;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+  @Value("${FRONTEND_URL:http://localhost:3000}")
+  private String frontendUrl;
+
   public SecurityConfig(JwtFilter jwtFilter, OAuth2SuccessHandler oAuth2SuccessHandler) {
     this.jwtFilter = jwtFilter;
     this.oAuth2SuccessHandler = oAuth2SuccessHandler;
   }
 
   @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of(frontendUrl));
+    config.setAllowedMethods(List.of("GET", "POST", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
+
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
                 auth.dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**")
                     .permitAll()
                     .requestMatchers("/api/auth/**")
                     .permitAll()
@@ -43,6 +66,8 @@ public class SecurityConfig {
                     .requestMatchers("/error")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/reviews")
+                    .permitAll()
+                    .requestMatchers("/api/reviews/*/chat")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
